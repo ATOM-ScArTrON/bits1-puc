@@ -1,0 +1,9 @@
+RPLCD
+smbus2
+RPi.GPIO
+sounddevice
+scipy
+numpy
+requests
+spidev
+Pillow
