@@ -27,7 +27,7 @@ Friend/Foe detection communication device for the Indian Army, built on Raspberr
 ## Setup
 
 ```bash
-git clone <repo-url>
+git clone "https://github.com/ATOM-ScArTrON/bits1-puc"
 cd puc-device
 bash setup.sh
 ```
