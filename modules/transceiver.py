@@ -203,3 +203,33 @@ def handle_lora_command(command: str, transceiver: Transceiver) -> bool:
         return False
 
     return False
+
+# ── Standalone Test ───────────────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    import sys
+
+    mode = sys.argv[1] if len(sys.argv) > 1 else "listen"
+
+    def on_msg(text):
+        print("[RECEIVED]", text)
+
+    t = Transceiver(tts_callback=on_msg, lcd_callback=on_msg)
+    t.setup()
+
+    if mode == "send":
+        msg = " ".join(sys.argv[2:]) or "test message"
+        print("[TX] Sending: {}".format(msg))
+        t.send_message(msg)
+        import time; time.sleep(1)
+
+    else:
+        print("[RX] Listening on {}... Ctrl+C to stop.".format(SERIAL_PORT))
+        t.start_listening()
+        try:
+            while True:
+                import time; time.sleep(1)
+        except KeyboardInterrupt:
+            print("\n[RX] Stopped.")
+
+    t.teardown()
