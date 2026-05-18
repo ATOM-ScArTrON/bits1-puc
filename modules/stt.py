@@ -16,6 +16,7 @@ Usage (standalone test):
 """
 
 import sounddevice as sd
+print(sd.query_devices())
 import scipy.io.wavfile as wav
 import numpy as np
 import requests

@@ -16,7 +16,7 @@ from modules.stt        import listen
 from modules.tts        import speak
 from modules.heart_rate import init_heart_rate, get_bpm, cleanup_heart_rate
 from modules.camera     import init_camera, capture, close_camera
-from modules.transceiver        import Transceiver, handle_lora_command
+from modules.transceiver import Transceiver, handle_lora_command
 
 import time
 
