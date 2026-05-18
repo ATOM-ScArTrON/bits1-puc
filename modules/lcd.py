@@ -45,6 +45,7 @@ def init_lcd() -> CharLCD:
 
 def lcd_show(lcd: CharLCD, line1: str, line2: str = ""):
     """Display two lines on the LCD. Text is truncated to 16 chars per line."""
+    if lcd is None: return
     lcd.clear()
     lcd.write_string(line1[:LCD_COLS].ljust(LCD_COLS))
     lcd.crlf()
@@ -52,18 +53,21 @@ def lcd_show(lcd: CharLCD, line1: str, line2: str = ""):
 
 def lcd_clear(lcd: CharLCD):
     """Clears the LCD screen."""
+    if lcd is None: return
     lcd.clear()
 
 def lcd_close(lcd: CharLCD):
     """Clears and closes the LCD. Call on script exit."""
+    if lcd is None: return
     lcd.clear()
     lcd.close(clear=True)
 
-def lcd_scroll(lcd: CharLCD, line1: str, line2: str = "", delay: float = 0.4):
+def lcd_scroll(lcd: CharLCD, line1: str, line2: str = "", delay: float = 0.1):
     """
     Scrolls long text across the top row if it exceeds 16 characters.
     line2 stays static on the bottom row.
     """
+    if lcd is None: return
     if len(line1) <= LCD_COLS:
         lcd_show(lcd, line1, line2)
         return
