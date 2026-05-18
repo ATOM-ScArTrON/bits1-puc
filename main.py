@@ -16,7 +16,7 @@ from modules.stt        import listen
 from modules.tts        import speak
 from modules.heart_rate import init_heart_rate, get_bpm, cleanup_heart_rate
 from modules.camera     import init_camera, capture, close_camera
-from transceiver        import Transceiver, handle_lora_command
+from modules.transceiver        import Transceiver, handle_lora_command
 
 import time
 
@@ -68,7 +68,7 @@ def handle_command(transcript: str, lcd, transceiver: Transceiver) -> bool:
 
     elif any(cmd in text for cmd in CMD_LORA_MSG):
         # "send message hello are you there" → sends over LoRa
-        matched = handle_lora_command(transcript, transceiver)
+        matched = handle_lora_command(transcript, transceiver, lcd=lcd)
         if matched:
             speak("Message sent.", lcd=lcd)
             lcd_show(lcd, "LoRa:", "Message sent")

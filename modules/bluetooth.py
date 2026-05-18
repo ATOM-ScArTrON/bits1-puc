@@ -211,6 +211,59 @@ def disconnect(mac: str = DEFAULT_MAC, name: str = DEFAULT_NAME):
     bt.close()
     print("[BT] Disconnected from {}.".format(name))
 
+def pair_new() -> bool:
+    """Scan, pair, trust, connect to a new device. Returns True if successful."""
+    bt = BluetoothCtl()
+    print("[BT] Scanning for {} seconds...".format(SCAN_DURATION))
+    bt.send("scan on", wait=0.5)
+    for i in range(SCAN_DURATION):
+        time.sleep(1)
+        print("[BT] Scanning... ({}/{})".format(i + 1, SCAN_DURATION), end="\r")
+    bt.send("scan off", wait=1.0)
+    bt.send("devices", wait=1.0)
+    lines = bt.get_output()
+    print()
+
+    devices = parse_devices(lines)
+    if not devices:
+        print("[BT] No devices found.")
+        bt.close()
+        return False
+
+    mac, name = pick_device(devices, title="Discovered devices")
+    if not mac:
+        bt.close()
+        return False
+
+    bt.send("info {}".format(mac), wait=0.5)
+    info = "\n".join(bt.get_output())
+    if "Paired: yes" not in info:
+        print("[BT] Pairing with {}...".format(name))
+        bt.send("pair {}".format(mac), wait=5.0)
+        bt.send("trust {}".format(mac), wait=1.0)
+        bt.get_output()
+        print("[BT] Paired and trusted.")
+
+    bt.send("connect {}".format(mac), wait=2.0)
+    connected = False
+    for i in range(CONNECT_TIMEOUT):
+        bt.send("info {}".format(mac), wait=0.5)
+        info = "\n".join(bt.get_output())
+        if "Connected: yes" in info:
+            connected = True
+            break
+        print("[BT] Waiting... ({}/{})".format(i + 1, CONNECT_TIMEOUT))
+
+    bt.close()
+
+    if connected:
+        print("[BT] Connected to {}.".format(name))
+        set_default_audio(mac, name)
+        return True
+    else:
+        print("[BT] Connection failed.")
+        return False
+
 # ── Standalone ────────────────────────────────────────────────────────────────
 
 def _standalone():
@@ -228,55 +281,11 @@ def _standalone():
             force_scan = True
 
     if force_scan:
-        bt = BluetoothCtl()
-        print("[BT] Scanning for {} seconds...".format(SCAN_DURATION))
-        bt.send("scan on", wait=0.5)
-        for i in range(SCAN_DURATION):
-            time.sleep(1)
-            print("[BT] Scanning... ({}/{})".format(i + 1, SCAN_DURATION), end="\r")
-        bt.send("scan off", wait=1.0)
-        bt.send("devices", wait=1.0)
-        lines = bt.get_output()
-        print()
-
-        devices = parse_devices(lines)
-        if not devices:
-            print("[BT] No devices found.")
-            bt.close()
-            return
-
-        mac, name = pick_device(devices, title="Discovered devices")
-        if not mac:
-            bt.close()
-            return
-
-        bt.send("info {}".format(mac), wait=0.5)
-        info = "\n".join(bt.get_output())
-        if "Paired: yes" not in info:
-            print("[BT] Pairing with {}...".format(name))
-            bt.send("pair {}".format(mac), wait=5.0)
-            bt.send("trust {}".format(mac), wait=1.0)
-            bt.get_output()
-            print("[BT] Paired and trusted.")
-
-        bt.send("connect {}".format(mac), wait=2.0)
-        connected = False
-        for i in range(CONNECT_TIMEOUT):
-            bt.send("info {}".format(mac), wait=0.5)
-            info = "\n".join(bt.get_output())
-            if "Connected: yes" in info:
-                connected = True
-                break
-            print("[BT] Waiting... ({}/{})".format(i + 1, CONNECT_TIMEOUT))
-
-        bt.close()
-
-        if connected:
-            print("[BT] Connected to {}.".format(name))
-            set_default_audio(mac, name)
+        success = pair_new()
+        if success:
             print("\n[BT] Done.")
         else:
-            print("[BT] Connection failed.")
+            print("\n[BT] Failed.")
 
 if __name__ == "__main__":
     _standalone()

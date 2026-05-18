@@ -46,7 +46,7 @@ OV2640_I2C_ADDR    = 0x30
 # ── Camera Class ──────────────────────────────────────────────────────────────
 
 class Camera:
-    def __init__(self, spi_bus=0, spi_device=0, i2c_bus=1):
+    def __init__(self, spi_bus=0, spi_device=1, i2c_bus=1):
         self.spi = spidev.SpiDev()
         self.spi.open(spi_bus, spi_device)
         self.spi.max_speed_hz = 1000000
