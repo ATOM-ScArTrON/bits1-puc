@@ -62,7 +62,7 @@ def lcd_close(lcd: CharLCD):
     lcd.clear()
     lcd.close(clear=True)
 
-def lcd_scroll(lcd: CharLCD, line1: str, line2: str = "", delay: float = 0.1):
+def lcd_scroll(lcd: CharLCD, line1: str, line2: str = "", delay: float = 0.15):
     """
     Scrolls long text across the top row if it exceeds 16 characters.
     line2 stays static on the bottom row.
