@@ -13,6 +13,7 @@ Usage (as module):
 Usage (standalone):
     python -m modules.bluetooth
     python -m modules.bluetooth --scan
+    python -m modules.bluetooth --disconnect
 """
 
 import subprocess
@@ -268,9 +269,15 @@ def pair_new() -> bool:
 
 def _standalone():
     force_scan = "--scan" in sys.argv
+    force_disconnect = "--disconnect" in sys.argv
     print("=" * 40)
     print("  Bluetooth Audio Setup")
     print("=" * 40)
+
+    if force_disconnect:
+        disconnect()
+        print("\n[BT] Done.")
+        return
 
     if not force_scan:
         success = connect()
