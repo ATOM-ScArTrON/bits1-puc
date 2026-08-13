@@ -23,8 +23,8 @@ import threading
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-DEFAULT_MAC     = "B4:9A:95:52:F4:DE"
-DEFAULT_NAME    = "Soundcore Q10i"
+DEFAULT_MAC     = "A8:E6:E8:D0:36:F2"
+DEFAULT_NAME    = "WH-CH720N"
 
 SCAN_DURATION   = 12
 CONNECT_TIMEOUT = 10
