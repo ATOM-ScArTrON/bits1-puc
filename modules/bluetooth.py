@@ -270,6 +270,7 @@ def pair_new() -> bool:
 def _standalone():
     force_scan = "--scan" in sys.argv
     force_disconnect = "--disconnect" in sys.argv
+    force_pair = "--pair" in sys.argv
     print("=" * 40)
     print("  Bluetooth Audio Setup")
     print("=" * 40)
@@ -277,6 +278,14 @@ def _standalone():
     if force_disconnect:
         disconnect()
         print("\n[BT] Done.")
+        return
+
+    if force_pair:
+        success = pair_new()
+        if success:
+            print("\n[BT] Done.")
+        else:
+            print("\n[BT] Failed.")
         return
 
     if not force_scan:
